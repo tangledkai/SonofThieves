@@ -10,7 +10,6 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;700;900&family=Noto+Sans+Mono:wght@400;700&family=Crimson+Pro:wght@400;600&display=swap');
-
         @font-face {
             font-family: 'Cubic11';
             src: url('fonts/Cubic_11_1.013_R.ttf') format('truetype');
@@ -259,9 +258,11 @@
         <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-900/10 blur-[120px] rounded-full">
         </div>
     </div>
+
     <div id="banner-image" class="w-full pt-16">
         <img src="assets/TitleImage001.png" alt="盜賊之子：艾瑟瑞爾戰記" class="w-full object-cover">
     </div>
+
     <header
         class="fixed top-0 inset-x-0 h-16 z-50 glass flex items-center justify-between px-6 border-b transition-opacity duration-300">
         <div class="flex items-center gap-4 cursor-pointer" onclick="toggleSidebar()">
@@ -315,7 +316,6 @@
         <h3 class="text-lg font-bold mb-6">閱讀設定</h3>
 
         <div class="space-y-6">
-
             <div>
                 <label class="text-[10px] font-bold text-gray-500 uppercase block mb-3">視覺主題</label>
                 <div class="grid grid-cols-5 gap-2">
@@ -351,7 +351,6 @@
                         title="深淵之海"></button>
                 </div>
             </div>
-
             <div>
                 <label class="text-[10px] font-bold text-gray-500 uppercase block mb-3">文字大小</label>
                 <div class="flex items-center gap-4">
@@ -362,7 +361,6 @@
                         class="flex-1 p-2 bg-white/5 rounded-lg hover:bg-white/10 text-sm font-bold">A+</button>
                 </div>
             </div>
-
             <div>
                 <label class="text-[10px] font-bold text-gray-500 uppercase block mb-3">行距</label>
                 <div class="flex items-center gap-4">
@@ -373,7 +371,6 @@
                         class="flex-1 p-2 bg-white/5 rounded-lg hover:bg-white/10 text-xs">寬鬆</button>
                 </div>
             </div>
-
             <div>
                 <label class="text-[10px] font-bold text-gray-500 uppercase block mb-3">字體</label>
                 <select id="font-selector" onchange="changeFont(this.value)"
@@ -386,17 +383,13 @@
             </div>
         </div>
     </div>
-
     <main class="relative z-10 pt-32 pb-20 px-6 sm:px-12 transition-all duration-300">
         <div id="loading-overlay" class="hidden flex flex-col items-center justify-center py-40">
             <div class="loading-spinner mb-4"></div>
             <p class="text-xs font-bold uppercase tracking-widest text-gray-500">正在翻閱卷軸...</p>
         </div>
-
         <article id="reader-content" class="reading-area animate-in fade-in duration-700">
-
         </article>
-
         <div id="control-buttons"
             class="max-w-4xl mx-auto mt-20 flex justify-between items-center px-4 transition-opacity duration-300">
             <button id="prev-btn" onclick="prevChapter()"
@@ -429,59 +422,56 @@
         const CHAPTER_CONFIG = [
             {
                 group: "雷文篇", items: [
-                    { title: "雷文篇-001篇 盜賊試煉", label: "盜賊試煉", file: "RavenArc001.dat" },
-                    { title: "雷文篇-002篇 大盜宣言", label: "大盜宣言", file: "RavenArc002.dat" },
-                    { title: "雷文篇-003篇 黑鴉之心", label: "黑鴉之心", file: "RavenArc003.dat" },
-                    { title: "雷文篇-004篇 暗影巢穴", label: "暗影巢穴", file: "RavenArc004.dat" },
-                    { title: "雷文篇-005篇 七日婚約", label: "七日婚約", file: "RavenArc005.dat" },
-                    { title: "雷文篇-006篇 暗夜之母", label: "暗夜之母", file: "RavenArc006.dat" },
-                    { title: "雷文篇-007篇 瑞爾地牢", label: "瑞爾地牢", file: "RavenArc007.dat" }
+                    { title: "雷文篇-001篇 盜賊試煉", label: "盜賊試煉", file: "RavenArc001.dat", wordCount: 2840 },
+                    { title: "雷文篇-002篇 大盜宣言", label: "大盜宣言", file: "RavenArc002.dat", wordCount: 2786 },
+                    { title: "雷文篇-003篇 黑鴉之心", label: "黑鴉之心", file: "RavenArc003.dat", wordCount: 2646 },
+                    { title: "雷文篇-004篇 暗影巢穴", label: "暗影巢穴", file: "RavenArc004.dat", wordCount: 2328 },
+                    { title: "雷文篇-005篇 七日婚約", label: "七日婚約", file: "RavenArc005.dat", wordCount: 2387 },
+                    { title: "雷文篇-006篇 暗夜之母", label: "暗夜之母", file: "RavenArc006.dat", wordCount: 2300 },
+                    { title: "雷文篇-007篇 瑞爾地牢", label: "瑞爾地牢", file: "RavenArc007.dat", wordCount: 0 }
                 ]
             },
             {
                 group: "番外篇", items: [
-                    { title: "番外篇-001篇 流亡者團", label: "流亡者團", file: "SideStories001.dat" },
-                    { title: "番外篇-002篇 盧恩修士", label: "盧恩修士", file: "SideStories002.dat" },
-                    { title: "番外篇-003篇 諾蘭王子", label: "諾蘭王子", file: "SideStories003.dat" }
+                    { title: "番外篇-001篇 流亡者團", label: "流亡者團", file: "SideStories001.dat", wordCount: 2136 },
+                    { title: "番外篇-002篇 盧恩修士", label: "盧恩修士", file: "SideStories002.dat", wordCount: 4367 },
+                    { title: "番外篇-003篇 諾蘭王子", label: "諾蘭王子", file: "SideStories003.dat", wordCount: 10176 }
                 ]
             }
         ];
         const FLAT_CHAPTERS = CHAPTER_CONFIG.reduce((acc, curr) => acc.concat(curr.items), []);
-
-        let currentIndex = 0;
-        let fontSize = 18;
-        let lineHeight = 1.0;
-        let currentFont = "'Noto Sans TC', sans-serif";
-
+        let currentIndex = 0;                    
+        let fontSize = 18;                 
+        let lineHeight = 1.0;              
+        let currentFont = "'Noto Sans TC', sans-serif";   
         async function init() {
-            lucide.createIcons();
-            renderSidebar();
-
+            lucide.createIcons(); 
+            renderSidebar();    
             const savedIndex = parseInt(localStorage.getItem('reading-index')) || 0;
             const savedTheme = localStorage.getItem('novel-theme') || 'dark';
             const savedFontSize = parseInt(localStorage.getItem('font-size')) || 18;
             const savedLineHeight = parseFloat(localStorage.getItem('line-height')) || 1.0;
             const savedFont = localStorage.getItem('font-family') || "'Noto Sans TC', sans-serif";
-
             fontSize = savedFontSize;
             lineHeight = savedLineHeight;
             currentFont = savedFont;
-
             document.getElementById('font-size-label').textContent = `${fontSize}px`;
             document.getElementById('line-height-label').textContent = lineHeight.toFixed(1);
             document.querySelector('#font-selector').value = currentFont;
-
             setTheme(savedTheme);
             applyReadingSettings();
-            await loadChapter(savedIndex);
-
-            // 監聽滾動事件更新閱讀進度
-            window.addEventListener('scroll', updateReadingProgress);
-
-            // 鍵盤快捷鍵
-            document.addEventListener('keydown', handleKeyboard);
+            await loadChapter(savedIndex); 
+            window.addEventListener('scroll', updateReadingProgress); 
+            document.addEventListener('keydown', handleKeyboard);   
         }
+        document.addEventListener('click', (e) => {
+            const settingsPanel = document.getElementById('settings-panel');
+            const settingsBtn = document.querySelector('button[onclick="toggleSettings()"]');
 
+            if (!settingsPanel.contains(e.target) && e.target !== settingsBtn && !settingsBtn.contains(e.target)) {
+                settingsPanel.classList.add('hidden');
+            }
+        });
         function renderSidebar() {
             const list = document.getElementById('chapter-list');
             list.innerHTML = CHAPTER_CONFIG.map(group => `
@@ -495,7 +485,8 @@
                         <button onclick="loadChapter(${index})" 
                                 class="w-full text-left px-4 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-3 ${index === currentIndex ? 'bg-blue-600 text-white shadow-lg' : 'hover:bg-white/5 text-gray-400'}">
                             <span class="text-[10px] font-bold opacity-50">${(groupIndex + 1).toString().padStart(2, '0')}</span>
-                            <span class="text-sm font-bold truncate">${item.title}</span>
+                            <span class="text-sm font-bold truncate flex-1">${item.title}</span>
+                            <span class="text-[10px] opacity-60 whitespace-nowrap">${item.wordCount?.toLocaleString() || '---'}字</span>
                         </button>
                     `;
             }).join('')}
@@ -503,48 +494,38 @@
         </div>
     `).join('');
         }
-
         async function loadChapter(index) {
             if (index < 0 || index >= FLAT_CHAPTERS.length) return;
-
             currentIndex = index;
             const chapter = FLAT_CHAPTERS[index];
             const contentArea = document.getElementById('reader-content');
             const loading = document.getElementById('loading-overlay');
-
             contentArea.classList.add('opacity-0');
             loading.classList.remove('hidden');
 
             try {
                 const response = await fetch(`assets/${chapter.file}`);
                 if (!response.ok) throw new Error('無法讀取卷軸檔案');
-
                 const encoded = await response.text();
                 const rawText = new TextDecoder('utf-8').decode(
                     Uint8Array.from(atob(encoded), c => c.charCodeAt(0))
                 );
-
                 const formattedContent = rawText
                     .split('\n')
                     .map(line => {
-                        if (line.trim() === '') return '<br>';
-
-                        let cleanLine = line.replace(/^#+\s*/, '').trim();
-
+                        if (line.trim() === '') return '<br>'; 
+                        let cleanLine = line.replace(/^#+\s*/, '').trim(); 
                         if (cleanLine.includes('：')) {
                             const parts = cleanLine.split('：');
-                            const name = parts[0];
-                            const dialog = parts.slice(1).join('：');
+                            const name = parts[0];                       
+                            const dialog = parts.slice(1).join('：');    
                             return `<p class="dialog-line"><span class="chapter-dialog">${name}：</span>${dialog}</p>`;
                         }
-                        return `<p>${cleanLine}</p>`;
+                        return `<p>${cleanLine}</p>`; 
                     }).join('');
-
-                // 計算該章節在所屬篇章內的索引
                 const group = CHAPTER_CONFIG.find(g => g.items.some(item => item.file === chapter.file));
                 const localIndex = group.items.findIndex(item => item.file === chapter.file);
-                console.log('localIndex:', localIndex); // 確認值
-
+                console.log('localIndex:', localIndex); 
                 contentArea.innerHTML = `
                     <div class="mb-16 text-center">
                         <span class="text-xs font-black uppercase tracking-[0.4em] text-gray-500 mb-2 block">CHAPTER ${(localIndex + 1).toString().padStart(2, '0')}</span>
@@ -555,11 +536,9 @@
                         ${formattedContent}
                     </div>
                 `;
-
                 applyReadingSettings();
-                localStorage.setItem('reading-index', index);
+                localStorage.setItem('reading-index', index);  
                 updateUIState();
-
             } catch (err) {
                 contentArea.innerHTML = `
                     <div class="py-40 text-center">
@@ -572,28 +551,25 @@
                 loading.classList.add('hidden');
                 contentArea.classList.remove('opacity-0');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                lucide.createIcons();
+                lucide.createIcons();  
             }
         }
-
         function applyReadingSettings() {
             document.documentElement.style.setProperty('--line-height', lineHeight);
             document.documentElement.style.setProperty('--font-read', currentFont);
             const content = document.querySelector('#reader-content > div:last-child');
             if (content) content.style.fontSize = `${fontSize}px`;
         }
-
         function updateUIState() {
-            document.getElementById('prev-btn').disabled = currentIndex === 0;
-            document.getElementById('next-btn').disabled = currentIndex === FLAT_CHAPTERS.length - 1;
+            document.getElementById('prev-btn').disabled = currentIndex === 0;                          
+            document.getElementById('next-btn').disabled = currentIndex === FLAT_CHAPTERS.length - 1;     
 
-            const progress = ((currentIndex + 1) / FLAT_CHAPTERS.length) * 100;
+            const progress = ((currentIndex + 1) / FLAT_CHAPTERS.length) * 100;                    
             document.getElementById('read-progress').style.width = `${progress}%`;
 
-            renderSidebar();
+            renderSidebar();   
             lucide.createIcons();
         }
-
         function updateReadingProgress() {
             const windowHeight = window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight - windowHeight;
@@ -601,75 +577,64 @@
             const progress = (scrolled / documentHeight) * 100;
             document.getElementById('reading-progress').style.width = `${progress}%`;
         }
-
         function nextChapter() { if (currentIndex < FLAT_CHAPTERS.length - 1) loadChapter(currentIndex + 1); }
-        function prevChapter() { if (currentIndex > 0) loadChapter(currentIndex - 1); }
-
+        function prevChapter() { if (currentIndex > 0) loadChapter(currentIndex - 1); }                      
         function toggleSidebar(force) {
             const sb = document.getElementById('sidebar');
-            if (force === undefined) sb.classList.toggle('hidden');
-            else if (force) sb.classList.remove('hidden');
-            else sb.classList.add('hidden');
+            if (force === undefined) sb.classList.toggle('hidden');  
+            else if (force) sb.classList.remove('hidden');     
+            else sb.classList.add('hidden');                       
         }
-
         function toggleSettings() {
             document.getElementById('settings-panel').classList.toggle('hidden');
         }
-
         function toggleFocusMode() {
             document.body.classList.toggle('focus-mode');
             localStorage.setItem('focus-mode', document.body.classList.contains('focus-mode'));
         }
-
         function setTheme(name) {
             document.body.className = `theme-${name} selection:bg-blue-500/30`;
             localStorage.setItem('novel-theme', name);
             const glow = document.getElementById('bg-glow');
             if (name === 'sepia' || name === 'paper') glow.style.opacity = 0;
-            else glow.style.opacity = 0;
+            else glow.style.opacity = 1;
         }
-
         function adjustFontSize(delta) {
-            fontSize = Math.max(10, Math.min(32, fontSize + delta));
+            fontSize = Math.max(10, Math.min(32, fontSize + delta)); 
             document.getElementById('font-size-label').textContent = `${fontSize}px`;
             localStorage.setItem('font-size', fontSize);
             applyReadingSettings();
         }
-
         function adjustLineHeight(delta) {
-            lineHeight = Math.max(0.8, Math.min(2.5, lineHeight + delta));
+            lineHeight = Math.max(0.8, Math.min(2.5, lineHeight + delta)); 
             document.getElementById('line-height-label').textContent = lineHeight.toFixed(1);
             localStorage.setItem('line-height', lineHeight);
             applyReadingSettings();
         }
-
         function changeFont(font) {
             currentFont = font;
             localStorage.setItem('font-family', font);
             applyReadingSettings();
         }
-
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
         function handleKeyboard(e) {
-            if (e.key === 'ArrowLeft') prevChapter();
-            if (e.key === 'ArrowRight') nextChapter();
+            if (e.key === 'ArrowLeft') prevChapter(); 
+            if (e.key === 'ArrowRight') nextChapter(); 
             if (e.key === 'f' || e.key === 'F') toggleFocusMode();
-            if (e.key === 'Escape') {
+            if (e.key === 'Escape') {          
                 toggleSettings();
                 toggleSidebar(false);
             }
         }
-
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('copy', e => e.preventDefault());
-        document.addEventListener('selectstart', e => e.preventDefault());
-        window.onload = init;
+        document.addEventListener('contextmenu', e => e.preventDefault());  
+        document.addEventListener('copy', e => e.preventDefault());  
+        document.addEventListener('selectstart', e => e.preventDefault());  
         document.addEventListener('keydown', e => {
             if (e.ctrlKey && e.key === 's') e.preventDefault();
         });
+        window.onload = init;
     </script>
 </body>
 
