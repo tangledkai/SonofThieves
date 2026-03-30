@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;700;900&family=Noto+Sans+Mono:wght@400;700&family=Crimson+Pro:wght@400;600&display=swap');
+
         @font-face {
             font-family: 'Cubic11';
             src: url('fonts/Cubic_11_1.013_R.ttf') format('truetype');
@@ -435,18 +436,19 @@
                 group: "番外篇", items: [
                     { title: "番外篇-001篇 流亡者團", label: "流亡者團", file: "SideStories001.dat", wordCount: 2136 },
                     { title: "番外篇-002篇 盧恩修士", label: "盧恩修士", file: "SideStories002.dat", wordCount: 4367 },
-                    { title: "番外篇-003篇 諾蘭王子", label: "諾蘭王子", file: "SideStories003.dat", wordCount: 10176 }
+                    { title: "番外篇-003篇 卡羅騎士", label: "卡羅騎士", file: "SideStories003.dat", wordCount: 5258 },
+                    { title: "番外篇-004篇 諾蘭王子", label: "諾蘭王子", file: "SideStories004.dat", wordCount: 5318 }
                 ]
             }
         ];
         const FLAT_CHAPTERS = CHAPTER_CONFIG.reduce((acc, curr) => acc.concat(curr.items), []);
-        let currentIndex = 0;                    
-        let fontSize = 18;                 
-        let lineHeight = 1.0;              
-        let currentFont = "'Noto Sans TC', sans-serif";   
+        let currentIndex = 0;
+        let fontSize = 18;
+        let lineHeight = 1.0;
+        let currentFont = "'Noto Sans TC', sans-serif";
         async function init() {
-            lucide.createIcons(); 
-            renderSidebar();    
+            lucide.createIcons();
+            renderSidebar();
             const savedIndex = parseInt(localStorage.getItem('reading-index')) || 0;
             const savedTheme = localStorage.getItem('novel-theme') || 'dark';
             const savedFontSize = parseInt(localStorage.getItem('font-size')) || 18;
@@ -460,9 +462,9 @@
             document.querySelector('#font-selector').value = currentFont;
             setTheme(savedTheme);
             applyReadingSettings();
-            await loadChapter(savedIndex); 
-            window.addEventListener('scroll', updateReadingProgress); 
-            document.addEventListener('keydown', handleKeyboard);   
+            await loadChapter(savedIndex);
+            window.addEventListener('scroll', updateReadingProgress);
+            document.addEventListener('keydown', handleKeyboard);
         }
         document.addEventListener('click', (e) => {
             const settingsPanel = document.getElementById('settings-panel');
@@ -513,19 +515,19 @@
                 const formattedContent = rawText
                     .split('\n')
                     .map(line => {
-                        if (line.trim() === '') return '<br>'; 
-                        let cleanLine = line.replace(/^#+\s*/, '').trim(); 
+                        if (line.trim() === '') return '<br>';
+                        let cleanLine = line.replace(/^#+\s*/, '').trim();
                         if (cleanLine.includes('：')) {
                             const parts = cleanLine.split('：');
-                            const name = parts[0];                       
-                            const dialog = parts.slice(1).join('：');    
+                            const name = parts[0];
+                            const dialog = parts.slice(1).join('：');
                             return `<p class="dialog-line"><span class="chapter-dialog">${name}：</span>${dialog}</p>`;
                         }
-                        return `<p>${cleanLine}</p>`; 
+                        return `<p>${cleanLine}</p>`;
                     }).join('');
                 const group = CHAPTER_CONFIG.find(g => g.items.some(item => item.file === chapter.file));
                 const localIndex = group.items.findIndex(item => item.file === chapter.file);
-                console.log('localIndex:', localIndex); 
+                console.log('localIndex:', localIndex);
                 contentArea.innerHTML = `
                     <div class="mb-16 text-center">
                         <span class="text-xs font-black uppercase tracking-[0.4em] text-gray-500 mb-2 block">CHAPTER ${(localIndex + 1).toString().padStart(2, '0')}</span>
@@ -537,7 +539,7 @@
                     </div>
                 `;
                 applyReadingSettings();
-                localStorage.setItem('reading-index', index);  
+                localStorage.setItem('reading-index', index);
                 updateUIState();
             } catch (err) {
                 contentArea.innerHTML = `
@@ -551,7 +553,7 @@
                 loading.classList.add('hidden');
                 contentArea.classList.remove('opacity-0');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                lucide.createIcons();  
+                lucide.createIcons();
             }
         }
         function applyReadingSettings() {
@@ -561,13 +563,13 @@
             if (content) content.style.fontSize = `${fontSize}px`;
         }
         function updateUIState() {
-            document.getElementById('prev-btn').disabled = currentIndex === 0;                          
-            document.getElementById('next-btn').disabled = currentIndex === FLAT_CHAPTERS.length - 1;     
+            document.getElementById('prev-btn').disabled = currentIndex === 0;
+            document.getElementById('next-btn').disabled = currentIndex === FLAT_CHAPTERS.length - 1;
 
-            const progress = ((currentIndex + 1) / FLAT_CHAPTERS.length) * 100;                    
+            const progress = ((currentIndex + 1) / FLAT_CHAPTERS.length) * 100;
             document.getElementById('read-progress').style.width = `${progress}%`;
 
-            renderSidebar();   
+            renderSidebar();
             lucide.createIcons();
         }
         function updateReadingProgress() {
@@ -578,12 +580,12 @@
             document.getElementById('reading-progress').style.width = `${progress}%`;
         }
         function nextChapter() { if (currentIndex < FLAT_CHAPTERS.length - 1) loadChapter(currentIndex + 1); }
-        function prevChapter() { if (currentIndex > 0) loadChapter(currentIndex - 1); }                      
+        function prevChapter() { if (currentIndex > 0) loadChapter(currentIndex - 1); }
         function toggleSidebar(force) {
             const sb = document.getElementById('sidebar');
-            if (force === undefined) sb.classList.toggle('hidden');  
-            else if (force) sb.classList.remove('hidden');     
-            else sb.classList.add('hidden');                       
+            if (force === undefined) sb.classList.toggle('hidden');
+            else if (force) sb.classList.remove('hidden');
+            else sb.classList.add('hidden');
         }
         function toggleSettings() {
             document.getElementById('settings-panel').classList.toggle('hidden');
@@ -600,13 +602,13 @@
             else glow.style.opacity = 1;
         }
         function adjustFontSize(delta) {
-            fontSize = Math.max(10, Math.min(32, fontSize + delta)); 
+            fontSize = Math.max(10, Math.min(32, fontSize + delta));
             document.getElementById('font-size-label').textContent = `${fontSize}px`;
             localStorage.setItem('font-size', fontSize);
             applyReadingSettings();
         }
         function adjustLineHeight(delta) {
-            lineHeight = Math.max(0.8, Math.min(2.5, lineHeight + delta)); 
+            lineHeight = Math.max(0.8, Math.min(2.5, lineHeight + delta));
             document.getElementById('line-height-label').textContent = lineHeight.toFixed(1);
             localStorage.setItem('line-height', lineHeight);
             applyReadingSettings();
@@ -620,17 +622,17 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         function handleKeyboard(e) {
-            if (e.key === 'ArrowLeft') prevChapter(); 
-            if (e.key === 'ArrowRight') nextChapter(); 
+            if (e.key === 'ArrowLeft') prevChapter();
+            if (e.key === 'ArrowRight') nextChapter();
             if (e.key === 'f' || e.key === 'F') toggleFocusMode();
-            if (e.key === 'Escape') {          
+            if (e.key === 'Escape') {
                 toggleSettings();
                 toggleSidebar(false);
             }
         }
-        document.addEventListener('contextmenu', e => e.preventDefault());  
-        document.addEventListener('copy', e => e.preventDefault());  
-        document.addEventListener('selectstart', e => e.preventDefault());  
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('copy', e => e.preventDefault());
+        document.addEventListener('selectstart', e => e.preventDefault());
         document.addEventListener('keydown', e => {
             if (e.ctrlKey && e.key === 's') e.preventDefault();
         });
