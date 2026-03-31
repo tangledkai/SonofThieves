@@ -247,6 +247,101 @@
         #floating-toolbar button:hover {
             transform: scale(1.1);
         }
+
+        .music-ctrl-btn {
+            padding: 8px;
+            border-radius: 10px;
+            transition: background 0.2s, color 0.2s, opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.6;
+        }
+
+        .music-ctrl-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            opacity: 1;
+        }
+
+        .music-ctrl-btn.active {
+            color: var(--theme-accent);
+            opacity: 1;
+        }
+
+        .music-play-main {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--theme-accent);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s, opacity 0.15s;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .music-play-main:hover {
+            transform: scale(1.08);
+            opacity: 0.9;
+        }
+
+        #now-playing-label {
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.3s;
+        }
+
+        #now-playing-label.playing {
+            color: var(--theme-accent);
+        }
+
+        .music-range {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.12);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .music-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--theme-accent);
+            cursor: pointer;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .music-track-btn {
+            width: 100%;
+            text-align: left;
+            padding: 8px 10px;
+            border-radius: 10px;
+            transition: background 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .music-track-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .music-track-btn.active-track {
+            background: rgba(88, 101, 242, 0.15);
+        }
+
+        #music-header-btn.music-on {
+            color: var(--theme-accent);
+        }
     </style>
 </head>
 
@@ -277,6 +372,10 @@
         </div>
 
         <div class="flex items-center gap-4">
+            <button id="music-header-btn" onclick="toggleMusicPanel(event)"
+                class="p-2 hover:bg-white/5 rounded-lg transition-colors" title="音樂播放器">
+                <i data-lucide="music-2" class="w-6 h-6"></i>
+            </button>
             <button onclick="toggleFocusMode()" class="p-2 hover:bg-white/5 rounded-lg transition-colors"
                 title="焦點閱讀模式">
                 <i data-lucide="eye" class="w-6 h-6"></i>
@@ -379,11 +478,59 @@
                     <option value="'Noto Serif TC', serif">思源宋體</option>
                     <option value="'Noto Sans TC', sans-serif">思源黑體</option>
                     <option value="'Noto Sans Mono', monospace">等寬黑體</option>
-                    <option value="'Cubic11', sans-serif">俐方體11號</option>
+                    <option value="'Cubic11', sans-serif">像素字體</option>
                 </select>
             </div>
         </div>
     </div>
+    <!-- Music Panel -->
+    <div id="music-panel" class="fixed top-20 right-6 w-80 z-50 glass rounded-2xl p-6 hidden shadow-2xl"
+        onclick="event.stopPropagation()">
+        <h3 class="text-lg font-bold mb-5">音樂播放器</h3>
+
+        <!-- Now Playing -->
+        <div class="mb-5 px-4 py-3 rounded-xl bg-white/5 border border-white/5">
+            <p class="text-[10px] font-bold text-gray-500 uppercase mb-1 tracking-widest">正在播放</p>
+            <p id="now-playing-label" class="truncate">盜賊之子 OST</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center justify-center gap-2 mb-5">
+            <button onclick="musicToggleShuffle()" id="music-shuffle-btn" class="music-ctrl-btn" title="隨機播放">
+                <i data-lucide="shuffle" class="w-4 h-4"></i>
+            </button>
+            <button onclick="musicPrev()" class="music-ctrl-btn" title="上一首">
+                <i data-lucide="skip-back" class="w-5 h-5"></i>
+            </button>
+            <button onclick="musicTogglePlay()" id="music-play-btn" class="music-play-main" title="播放/暫停">
+                <i data-lucide="play" class="w-5 h-5"></i>
+            </button>
+            <button onclick="musicNext()" class="music-ctrl-btn" title="下一首">
+                <i data-lucide="skip-forward" class="w-5 h-5"></i>
+            </button>
+            <button onclick="musicToggleMute()" id="music-mute-btn" class="music-ctrl-btn" title="靜音">
+                <i data-lucide="volume-2" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <!-- Volume -->
+        <div class="mb-6">
+            <label class="text-[10px] font-bold text-gray-500 uppercase block mb-3 tracking-widest">音量</label>
+            <div class="flex items-center gap-3">
+                <i data-lucide="volume-1" class="w-4 h-4 text-gray-500 flex-shrink-0"></i>
+                <input type="range" id="music-volume" min="0" max="100" value="80" oninput="musicSetVolume(this.value)"
+                    class="music-range flex-1">
+                <span id="music-volume-label" class="text-xs font-bold text-gray-400 w-8 text-right">80%</span>
+            </div>
+        </div>
+
+        <!-- Playlist -->
+        <div>
+            <label class="text-[10px] font-bold text-gray-500 uppercase block mb-3 tracking-widest">播放清單</label>
+            <div id="music-playlist" class="space-y-1 max-h-48 overflow-y-auto pr-1"></div>
+        </div>
+    </div>
+
     <main class="relative z-10 pt-32 pb-20 px-6 sm:px-12 transition-all duration-300">
         <div id="loading-overlay" class="hidden flex flex-col items-center justify-center py-40">
             <div class="loading-spinner mb-4"></div>
@@ -469,9 +616,14 @@
         document.addEventListener('click', (e) => {
             const settingsPanel = document.getElementById('settings-panel');
             const settingsBtn = document.querySelector('button[onclick="toggleSettings()"]');
-
             if (!settingsPanel.contains(e.target) && e.target !== settingsBtn && !settingsBtn.contains(e.target)) {
                 settingsPanel.classList.add('hidden');
+            }
+
+            const musicPanel = document.getElementById('music-panel');
+            const musicBtn = document.getElementById('music-header-btn');
+            if (!musicPanel.contains(e.target) && e.target !== musicBtn && !musicBtn.contains(e.target)) {
+                musicPanel.classList.add('hidden');
             }
         });
         function renderSidebar() {
@@ -588,6 +740,7 @@
             else sb.classList.add('hidden');
         }
         function toggleSettings() {
+            document.getElementById('music-panel').classList.add('hidden');
             document.getElementById('settings-panel').classList.toggle('hidden');
         }
         function toggleFocusMode() {
@@ -626,10 +779,147 @@
             if (e.key === 'ArrowRight') nextChapter();
             if (e.key === 'f' || e.key === 'F') toggleFocusMode();
             if (e.key === 'Escape') {
-                toggleSettings();
+                document.getElementById('settings-panel').classList.add('hidden');
+                document.getElementById('music-panel').classList.add('hidden');
                 toggleSidebar(false);
             }
         }
+        // ── Music Player ──────────────────────────────────────────────
+        const MUSIC_TRACKS = [
+            { name: '王城邊境-糾結', file: 'assets/ost/TangledMusic003.mp3' },
+            { name: '暗夜鈴聲-糾結', file: 'assets/ost/TangledMusic013.mp3' },
+            { name: '地窖寶箱-糾結', file: 'assets/ost/TangledMusic020.mp3' },
+            { name: '聖天迴盪-糾結', file: 'assets/ost/TangledMusic035.mp3' },
+            { name: '冒險啟程-糾結', file: 'assets/ost/TangledMusic063.mp3' },
+        ];
+
+        const musicAudio = new Audio();
+        musicAudio.volume = 0.8;
+        let musicIndex = 0;
+        let musicPlaying = false;
+        let musicShuffle = false;
+        let musicMuted = false;
+
+        function toggleMusicPanel(e) {
+            if (e) e.stopPropagation();
+            const panel = document.getElementById('music-panel');
+            document.getElementById('settings-panel').classList.add('hidden');
+            panel.classList.toggle('hidden');
+            if (!panel.classList.contains('hidden')) renderMusicPlaylist();
+        }
+
+        function musicLoad(index, autoPlay) {
+            musicIndex = ((index % MUSIC_TRACKS.length) + MUSIC_TRACKS.length) % MUSIC_TRACKS.length;
+            musicAudio.src = MUSIC_TRACKS[musicIndex].file;
+            document.getElementById('now-playing-label').textContent = MUSIC_TRACKS[musicIndex].name;
+            if (autoPlay) {
+                musicAudio.play().catch(() => { });
+                musicPlaying = true;
+            }
+            updateMusicUI();
+            renderMusicPlaylist();
+        }
+
+        function musicTogglePlay() {
+            if (musicPlaying) {
+                musicAudio.pause();
+                musicPlaying = false;
+            } else {
+                if (!musicAudio.src || musicAudio.readyState === 0) {
+                    musicLoad(musicIndex, true);
+                    return;
+                }
+                musicAudio.play().catch(() => { });
+                musicPlaying = true;
+            }
+            updateMusicUI();
+        }
+
+        function musicNext() {
+            const next = musicShuffle
+                ? Math.floor(Math.random() * MUSIC_TRACKS.length)
+                : (musicIndex + 1) % MUSIC_TRACKS.length;
+            musicLoad(next, true);
+        }
+
+        function musicPrev() {
+            if (musicAudio.currentTime > 3) {
+                musicAudio.currentTime = 0;
+            } else {
+                const prev = musicShuffle
+                    ? Math.floor(Math.random() * MUSIC_TRACKS.length)
+                    : (musicIndex - 1 + MUSIC_TRACKS.length) % MUSIC_TRACKS.length;
+                musicLoad(prev, true);
+            }
+        }
+
+        function musicToggleShuffle() {
+            musicShuffle = !musicShuffle;
+            updateMusicUI();
+        }
+
+        function musicToggleMute() {
+            musicMuted = !musicMuted;
+            musicAudio.muted = musicMuted;
+            updateMusicUI();
+        }
+
+        function musicSetVolume(val) {
+            musicAudio.volume = val / 100;
+            document.getElementById('music-volume-label').textContent = `${val}%`;
+            if (val == 0) {
+                musicMuted = true;
+                musicAudio.muted = true;
+            } else if (musicMuted) {
+                musicMuted = false;
+                musicAudio.muted = false;
+            }
+            updateMusicUI();
+        }
+
+        function renderMusicPlaylist() {
+            const container = document.getElementById('music-playlist');
+            if (!container) return;
+            container.innerHTML = MUSIC_TRACKS.map((track, i) => `
+                <button class="music-track-btn ${i === musicIndex ? 'active-track' : ''}" onclick="musicLoad(${i}, true)">
+                    <span style="font-size:10px;font-weight:700;opacity:0.4;flex-shrink:0;width:16px">${(i + 1).toString().padStart(2, '0')}</span>
+                    <span style="font-size:12px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${i === musicIndex ? 'color:var(--theme-accent)' : 'opacity:0.75'}">${track.name}</span>
+                    ${i === musicIndex && musicPlaying ? '<i data-lucide="volume-2" style="width:12px;height:12px;flex-shrink:0;color:var(--theme-accent)"></i>' : '<span style="width:12px"></span>'}
+                </button>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function updateMusicUI() {
+            const playBtn = document.getElementById('music-play-btn');
+            const shuffleBtn = document.getElementById('music-shuffle-btn');
+            const muteBtn = document.getElementById('music-mute-btn');
+            const headerBtn = document.getElementById('music-header-btn');
+
+            if (playBtn) playBtn.innerHTML = musicPlaying
+                ? '<i data-lucide="pause" class="w-5 h-5"></i>'
+                : '<i data-lucide="play" class="w-5 h-5"></i>';
+
+            if (shuffleBtn) shuffleBtn.classList.toggle('active', musicShuffle);
+
+            if (muteBtn) {
+                muteBtn.innerHTML = musicMuted
+                    ? '<i data-lucide="volume-x" class="w-4 h-4"></i>'
+                    : '<i data-lucide="volume-2" class="w-4 h-4"></i>';
+                muteBtn.classList.toggle('active', musicMuted);
+            }
+
+            if (headerBtn) headerBtn.classList.toggle('music-on', musicPlaying);
+
+            document.getElementById('now-playing-label')
+                ?.classList.toggle('playing', musicPlaying);
+
+            lucide.createIcons();
+        }
+
+        musicAudio.addEventListener('ended', musicNext);
+        // ──────────────────────────────────────────────────────────────
+
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('copy', e => e.preventDefault());
         document.addEventListener('selectstart', e => e.preventDefault());
